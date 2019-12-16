@@ -49,7 +49,7 @@ function* turingCode(band, pos, relativeBase, resultArr) {
         break;
       case 4:
         console.log(relativeBase)
-        const four =  par1
+        const four =  mode[0] === 2 ? band[relativeBase+band[pos+1]] : band[pos+1]
         const result = [four, pos + 2, relativeBase];
         console.log(`Output: ${result[0]}`);
         resultArr.push(four)
