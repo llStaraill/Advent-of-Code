@@ -60,7 +60,6 @@ Amplifier.prototype.run = function(input) {
 let sequenceLoop = [9, 8, 7, 6, 5];
 let lastOuput;
 
-
 function feedBackLoop(amp, loop, i, arr) {
   console.log(`////// Loop #${1 + i}`);
   arr.push(loop[5]);
