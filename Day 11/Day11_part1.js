@@ -1,3 +1,5 @@
+
+
 let intCode = inputD11;
 
 let c = {
@@ -23,7 +25,7 @@ class Robot {
       x: 0,
       y: 0
     };
-    this.pixDir = "n";
+    this.pixDir = "^";
     this.op = new TuringMachine(data);
   }
   boot() {
@@ -40,44 +42,44 @@ class Robot {
 
 function getDirection(x, state, pos) {
   switch (state) {
-    case "n":
+    case "^":
       if (x === 0) {
         pos.x--;
-        return "w";
+        return "<";
         break;
       } else {
         pos.x++;
-        return "e";
+        return ">";
         break;
       }
-    case "e":
+    case ">":
       if (x === 0) {
-        pos.y--;
-        return "n";
+        pos.y++;
+        return "^";
         break;
       } else {
-        pos.y++;
-        return "s";
+        pos.y--;
+        return "v";
         break;
       }
-    case "s":
+    case "v":
       if (x === 0) {
         pos.x++;
-        return "e";
+        return ">";
         break;
       } else {
         pos.x--;
-        return "w";
+        return "<";
         break;
       }
-    case "w":
+    case "<":
       if (x === 0) {
-        pos.y++;
-        return "s";
+        pos.y--;
+        return "v";
         break;
       } else {
-        pos.y--;
-        return "n";
+        pos.y++;
+        return "^";
         break;
       }
   }
@@ -88,22 +90,31 @@ robot.boot();
 let image = new Map();
 
 function moveRobot(rob, i) {
-  console.log(rob)
-  if (rob.op.resultArr.indexOf(false) !==) {
-    return;
-  }
-
+  //console.log(rob)
+ 
+  for (let i = 0; i<30000; i++) {
+    if (rob.op.done){
+      return;
+    }
+  //console.log(`${i}: ${rob.pixPos.x},${rob.pixPos.y}`)
+  //console.log(rob.op.resultArr)
   let pixExists = image.get(`${rob.pixPos.x},${rob.pixPos.y}`);
   let inp = pixExists ? pixExists : 0;
+  //console.log(rob.pixPos)
+  //console.log(`C:${inp} - M:${pixExists}`)
   let state = rob.pixDir;
-  let position = Object.assign(rob.pixPos);
   let [color, dir] = [...rob.run(inp)];
   image.set(`${rob.pixPos.x},${rob.pixPos.y}`, color);
-  rob.pixDir = getDirection(dir, state, position);
-  i++
-  moveRobot(rob);
+  
+  rob.pixDir = getDirection(dir, state, rob.pixPos);
+  
+}
+   
+  //moveRobot(rob, i);
 }
 
 moveRobot(robot, 0);
 
-
+console.log(image)
+//console.log(new Map([...image.entries()].sort()))
+//console.log(image.has("-47,-24"))

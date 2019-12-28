@@ -21,14 +21,14 @@ function getParameter(mode, num, rB, band, pos) {
   }
 }
 
-function* turingCode(band, pos, relativeBase, resultArr) {
-  while (pos < band.length) {
+function* turingCode(band, pos, relativeBase, resultArr, done) {
+  while (pos < band.length & band[pos] !== 99) {
     let [op, ...mode] = prepareDP(band[pos]);
     let par1 = getParameter(mode[0], 1, relativeBase, band, pos);
     let par2 = getParameter(mode[1], 2, relativeBase, band, pos);
     let par3 = mode[2] === 2 ? relativeBase + band[pos + 3] : band[pos + 3];
-
-    /*console.log(
+    
+  /*  console.log(
       `Pos: ${pos}/${
         band[pos]
       } - rB: ${relativeBase}\nPar: [${par1}|${par2}|${par3}]\nPos:[${
@@ -37,8 +37,9 @@ function* turingCode(band, pos, relativeBase, resultArr) {
     );*/
     switch (op) {
       case 99:
-        resultArr.push(false);
-        return;
+        console.log(`99`);
+        done = true;
+        yield 99;
       case 1:
         band.splice(par3, 1, par1 + par2);
         pos += 4;
@@ -49,7 +50,7 @@ function* turingCode(band, pos, relativeBase, resultArr) {
         break;
       case 3:
         let inp = yield;
-        console.log(`Input: ${inp}`);
+        //console.log(`Input: ${inp}`);
         let three =
           mode[0] == 2
             ? parseInt(relativeBase) + parseInt(band[pos + 1])
@@ -59,10 +60,10 @@ function* turingCode(band, pos, relativeBase, resultArr) {
         break;
       case 4:
         const four = par1;
-        const result = [four, pos + 2, relativeBase, pos];
-        //console.log(`Output: ${result}`);
-
+        const result = [four, pos + 2, relativeBase];
+        //console.log(`Output: ${result[0]}`);        
         resultArr.push(four);
+        //yield result;
         pos += 2;
         break;
       case 5:
@@ -86,7 +87,7 @@ function* turingCode(band, pos, relativeBase, resultArr) {
         pos += 2;
         break;
     }
-  } yield done = true;
+  }
 }
 
 class TuringMachine {
@@ -109,14 +110,15 @@ class TuringMachine {
   }
 
   run(input) {
-    //console.log(this.position)
     this.resultArr.splice(0, 2);
-    this.pc.next(input);
+    this.pc.next(input)
     let result = this.resultArr;
+    
     return result;
   }
 
   finish() {
-    return this.done
+    return this.done;
   }
 }
+
