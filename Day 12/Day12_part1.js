@@ -119,7 +119,7 @@ function lcm(x, y) {
   return !x || !y ? 0 : Math.abs((x * y) / gcd(x, y));
 }
 
-function countReset(xyz, num, arra) {
+function countResetAll(xyz, arra) {
   let inc = 0;
   let arr = JSON.parse(JSON.stringify(arra));
 
@@ -128,49 +128,20 @@ function countReset(xyz, num, arra) {
     arr.map(i => addVelocity(i));
     inc++;
   } while (
-    arra[num].pos[xyz] !== arr[num].pos[xyz] ||
-    arra[num].vel[xyz] !== arr[num].vel[xyz]
+    arra[0].pos[xyz] !== arr[0].pos[xyz] ||
+    arra[0].vel[xyz] !== arr[0].vel[xyz] ||
+    arra[1].pos[xyz] !== arr[1].pos[xyz] ||
+    arra[1].vel[xyz] !== arr[1].vel[xyz] ||
+    arra[2].pos[xyz] !== arr[2].pos[xyz] ||
+    arra[2].vel[xyz] !== arr[2].vel[xyz] ||
+    arra[3].pos[xyz] !== arr[3].pos[xyz] ||
+    arra[3].vel[xyz] !== arr[3].vel[xyz]
   );
 
   return inc;
 }
 
-console.log(countReset("x", 0, moonArr));
-/*
-let oIoSteps = {
-  x: countReset("x", 0, moonArr),
-  y: countReset("y", 0, moonArr),
-  z: countReset("z", 0, moonArr)
-};
-
-let europeSteps = {
-  x: countReset("x", 1, moonArr),
-  y: countReset("y", 1, moonArr),
-  z: countReset("z", 1, moonArr)
-};
-
-let ganymedeSteps = {
-  x: countReset("x", 2, moonArr),
-  y: countReset("y", 2, moonArr),
-  z: countReset("z", 2, moonArr)
-};
-
-let callistoSteps = {
-  x: countReset("x", 3, moonArr),
-  y: countReset("y", 3, moonArr),
-  z: countReset("z", 3, moonArr)
-};
-
-let moonSteps = [oIoSteps, europeSteps, ganymedeSteps, callistoSteps];
-
-function addLCM(moon) {
-  moon.lcm = lcm(lcm(moon.x, moon.y), moon.z);
-}
-
-moonSteps.map(i => addLCM(i));
-
-let reset = lcm(
-  oIoSteps.lcm,
-  lcm(europeSteps.lcm, lcm(ganymedeSteps.lcm, callistoSteps.lcm))
-);
-console.log(reset);*/
+let x = countResetAll("x", moonArr);
+let y = countResetAll("y", moonArr);
+let z = countResetAll("z", moonArr);
+let universeReset = lcm(x, lcm(y, z));
