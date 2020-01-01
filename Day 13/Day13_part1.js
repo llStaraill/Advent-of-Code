@@ -9,6 +9,8 @@ class Tile {
   }
 }
 
+// Part II
+
 function getTiles(arr) {
   let newArr = [];
   for (let i = 0; i < arr.length; i += 3) {
@@ -18,33 +20,37 @@ function getTiles(arr) {
 }
 let tileField = getTiles(playfield);
 
-//let blockArr = tileArr.filter(i => i.t === 2);
-//let blockAmount = blockArr.length;
-
-// Part II
-
 let widthRange = tileField.map(i => i.x);
 let heightRange = tileField.map(i => i.y);
 
 let width = Math.max(...widthRange) + 1;
 let height = Math.max(...heightRange) + 1;
 
-drawImage(tileField, [width, height], 10);
+drawImage(tileField, [width, height], 10, []);
 
-let fieldData;
-let tileArr;
+function updateGame(inp) {
+  let fieldData = [...arcade.run(inp)];
+  let tileArr = getTiles(fieldData);
+  
+  drawImage(tileArr, [width, height], 10);
+  return tileArr;
+}
 
-function updateGame(arr) {}
 
-let score = 0;
 window.addEventListener("keydown", event => {
   if (event.keyCode === 37) {
-    fieldData = [...arcade.run(-1)];
+    updateGame(-1);
   } else if (event.keyCode === 39) {
-    fieldData = [...arcade.run(1)];
+    updateGame(1);
+  } else if (event.keyCode === 40) {
+    updateGame(0);
+  } else if (event.keyCode === 32) {
+    location.reload();
   }
-  tileArr = getTiles(fieldData);
-  drawImage(tileArr, [width, height], 10);
-});
+})
 
+let blockArr = playfield.filter(i => i.t === 2);
+let blockAmount = blockArr.length;
 
+// Highscore by destroying blocks
+// If time, redo with bot?

@@ -110,10 +110,10 @@ class TuringMachine {
   }
 
   run(input) {
-    this.resultArr.splice(0, 2);
+    //this.resultArr.splice(0, 2);
     this.pc.next(input)
     let result = this.resultArr;
-    console.log(result)
+    //console.log(result)
     return result;
   }
 
