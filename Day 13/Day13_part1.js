@@ -10,33 +10,39 @@ class Tile {
 }
 
 // Part II
+let tileMap = new Map();
 
-function getTiles(arr) {
-  let newArr = [];
+function getTiles(map, arr) {
   for (let i = 0; i < arr.length; i += 3) {
-    newArr.push(new Tile(arr[i], arr[i + 1], arr[i + 2]));
+    map.set(`${arr[i]},${arr[i + 1]}`, arr[i + 2]);
   }
-  return newArr;
 }
-let tileField = getTiles(playfield);
 
-let widthRange = tileField.map(i => i.x);
-let heightRange = tileField.map(i => i.y);
+function getMax(map, axis) {
+  return Math.max(
+    ...[...map.keys()]
+      .map(i => i.split(","))
+      .map(i => i[axis === "x" ? 0 : 1])
+      .map(Number)
+  );
+}
 
-let width = Math.max(...widthRange) + 1;
-let height = Math.max(...heightRange) + 1;
+getTiles(tileMap, playfield);
 
-drawImage(tileField, [width, height], 10, []);
+let width = getMax(tileMap, "x") + 1;
+let height = getMax(tileMap, "y") + 1;
+
+drawImage(tileMap, [width, height], 10);
 
 function updateGame(inp) {
-  let fieldData = [...arcade.run(inp)];
-  let tileArr = getTiles(fieldData);
-  
-  drawImage(tileArr, [width, height], 10);
-  return tileArr;
+  let inputData = [...arcade.run(inp)];
+  getTiles(tileMap, inputData);
+  let score = tileMap.get("-1,0");
+  document.getElementById("score").innerHTML = score;
+  drawImage(tileMap, [width, height], 10);
 }
 
-
+/*
 window.addEventListener("keydown", event => {
   if (event.keyCode === 37) {
     updateGame(-1);
@@ -47,10 +53,32 @@ window.addEventListener("keydown", event => {
   } else if (event.keyCode === 32) {
     location.reload();
   }
-})
+});
 
 let blockArr = playfield.filter(i => i.t === 2);
 let blockAmount = blockArr.length;
 
 // Highscore by destroying blocks
 // If time, redo with bot?
+
+*/
+function findPos(map, item) {
+  return new Tile(
+    ...[...map.entries()]
+      .map(i => [i[0].split(",").map(Number), i[1]])
+      .filter(i => i[1] === item)[0]
+      .flat()
+  );
+}
+
+function botIt(map) {
+  let ball = findPos(map, 4);
+  let paddle = findPos(map, 3);
+  updateGame(Math.sign(ball.x - paddle.x));
+}
+let botButton = document.getElementById("botBtn")
+document
+  .getElementById("botBtn")
+  .addEventListener("click", () => setInterval(() => botIt(tileMap), 100));
+
+  console.log(botButton)

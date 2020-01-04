@@ -1,4 +1,4 @@
-function drawImage(arr, canvasSize, pixelSize) {
+function drawImage(map, canvasSize, pixelSize) {
   let imageColors = {
     0: "rgb(150,150,150)",
     1: "rgb(0,0,0)",
@@ -20,6 +20,16 @@ function drawImage(arr, canvasSize, pixelSize) {
   ctx.fillRect(0, 0, c.width * pS, c.height * pS);
 
   // Drawing //
+
+  map.forEach((value, key) => {
+    let entry = new Tile(...key.split(","), value);
+   
+      ctx.fillStyle = imageColors[entry.t];
+      ctx.fillRect(entry.x * pS, entry.y * pS, pS, pS);
+    
+  });
+}
+/*
   arr.map(i => {
     
     if (i.x === -1 && i.y === 0) {
@@ -35,3 +45,4 @@ function drawImage(arr, canvasSize, pixelSize) {
   
   
 }
+*/
