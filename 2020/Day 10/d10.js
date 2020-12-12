@@ -35,18 +35,18 @@ let amountOfPermutations = 1;
 function partTwo(inputArr) {
   let arr = [...inputArr];
   console.log(arr);
-  for (let i = 0; i < inputArr.length-1; i++) {
-    let plusOne = arr.indexOf(arr[i] + 1) !== -1;
-    let plusTwo = arr.indexOf(arr[i] + 2) !== -1;
-    let plusThree = arr.indexOf(arr[i] + 3) !== -1;
+  for (let i = 0; i < inputArr.length - 1; i++) {
+    let plusOne = arr[i] + 1;
+    let plusTwo = arr[i] + 2;
+    let plusThree = arr[i] + 3;
 
-    let options = [plusOne, plusTwo, plusThree].filter((el) => el === true);
-    console.log(arr[i],options)
-    if (options.length > 1) {
-      amountOfPermutations += options.length;
-    }
+    let options = [plusOne, plusTwo, plusThree].filter(
+      (el) => arr.indexOf(el) !== -1
+    );
+
+    console.log(options);
   }
 }
 
 partTwo(input);
-//console.log(amountOfPermutations);
+console.log(amountOfPermutations);
