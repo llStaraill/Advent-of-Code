@@ -28,9 +28,10 @@ function parseInput(str) {
 let amount = 0;
 let bags = [];
 function checkBag(arr, color) {
-  input.map((el) => {
+  arr.map((el) => {
     let containerBag = el[0];
     let contentBags = el[1];
+
     contentBags.map((li) => {
       let currBag = li[1];
       if (currBag.includes(color) && bags.indexOf(containerBag) === -1) {
@@ -40,7 +41,5 @@ function checkBag(arr, color) {
     });
   });
 }
-
-// WIP
-checkBag(input, "gold");
+checkBag(input, "shinygoldbag");
 const part1 = bags.length;
