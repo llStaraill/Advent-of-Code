@@ -25,7 +25,7 @@ function findNumber(string, nr) {
   return number - 1;
 }
 
-//const partOne = findNumber(input, 5); 
-const partTwo = findNumber(input,6);
-console.log(partTwo);
+const partOne = findNumber(input, 5); // 282749
+const partTwo = findNumber(input,6); // 9962624
+
 
