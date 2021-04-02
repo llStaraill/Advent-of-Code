@@ -13,8 +13,7 @@ function initSantaPositions(amount) {
 }
 
 function getActiveSanta(i, amount) {
-  /* let activeSanta = (i + 1) % amount == 0 ? 1 : 0; */
-  let activeSanta = (i+1) - (Math.floor((i + 1) / amount)*amount);
+  let activeSanta = i + 1 - Math.floor((i + 1) / amount) * amount;
   return activeSanta;
 }
 
@@ -53,17 +52,10 @@ function visitHouses(cmdList, santaAmount) {
     }
 
     let coordinates = currDeliveryPosition.toString();
-
-    if (!houseMap.has(coordinates)) {
-      houseMap.set(coordinates, 1);
-    } else {
-      let timesVisited = houseMap.get(coordinates);
-      houseMap.set(coordinates, timesVisited + 1);
-    }
+    houseMap.set(coordinates, 1);
   });
 
   return houseMap.size;
 }
 const partOne = visitHouses(input, 1); // 2592
 const partTwo = visitHouses(input, 2); // 2360
-
