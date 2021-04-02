@@ -30,24 +30,16 @@ function visitHouses(cmdList, santaAmount) {
 
     switch (cmd) {
       case "<":
-        {
-          currDeliveryPosition[0]--;
-        }
+        currDeliveryPosition[0]--;
         break;
       case ">":
-        {
-          currDeliveryPosition[0]++;
-        }
+        currDeliveryPosition[0]++;
         break;
       case "^":
-        {
-          currDeliveryPosition[1]--;
-        }
+        currDeliveryPosition[1]--;
         break;
       case "v":
-        {
-          currDeliveryPosition[1]++;
-        }
+        currDeliveryPosition[1]++;
         break;
     }
 
@@ -59,3 +51,5 @@ function visitHouses(cmdList, santaAmount) {
 }
 const partOne = visitHouses(input, 1); // 2592
 const partTwo = visitHouses(input, 2); // 2360
+
+console.log(partOne,partTwo)
