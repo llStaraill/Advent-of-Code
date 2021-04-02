@@ -1,5 +1,4 @@
 const fs = require("fs");
-const axios = require("axios");
 
 const args = process.argv.splice(2);
 
