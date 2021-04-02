@@ -23,11 +23,8 @@ let input = fs
     let floor = 0;
     for (let i = 0; i < inputArr.length; i++) {
       let cmd = inputArr[i];
-      if (cmd === '(') {
-        floor++;
-      } else if (cmd === ')') {
-        floor--
-      }
+      cmd === '(' ? floor++ : floor--;
+      
       if (floor === -1) {
         return i+1
       }
@@ -35,3 +32,4 @@ let input = fs
   }
 
   const partTwo = findBasementCmd(input); // 1783
+console.log(partTwo)
