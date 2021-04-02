@@ -34,17 +34,21 @@ let amountOfPermutations = 1;
 
 function partTwo(inputArr) {
   let arr = [...inputArr];
-  console.log(arr);
-  for (let i = 0; i < inputArr.length - 1; i++) {
+  if (arr.length === 0) {
+    return;
+  }
+  for (let i = 0; i < arr.length - 1; i++) {
     let plusOne = arr[i] + 1;
     let plusTwo = arr[i] + 2;
     let plusThree = arr[i] + 3;
+    let checkRange = [arr[i + 1], arr[i + 2], arr[1 + 3]];
 
-    let options = [plusOne, plusTwo, plusThree].filter(
-      (el) => arr.indexOf(el) !== -1
-    );
-
-    console.log(options);
+    if (arr[i + 1] !== arr[i] + 3) {
+      if (arr[i + 1] == arr[i] + 2) amountOfPermutations++;
+      else if (arr[i + 1] === arr[i] + 1) {
+        amountOfPermutations++;
+      }
+    }
   }
 }
 
