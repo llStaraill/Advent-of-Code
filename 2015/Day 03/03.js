@@ -13,7 +13,7 @@ function initSantaPositions(amount) {
 }
 
 function getActiveSanta(i, amount) {
-  let activeSanta = i + 1 - Math.floor((i + 1) / amount) * amount;
+  let activeSanta = (i + 1) % amount;
   return activeSanta;
 }
 
