@@ -4,88 +4,38 @@ const fileName = args[0] === "demo" ? "./demo" : "./input";
 
 let input = fs.readFileSync(fileName, "utf-8").split(/\n/);
 
-function isWithoutNaughtySequence(string) {
-  let hasNaughtySequence = false;
-  let sequenceList = ["ab", "cd", "pq", "xy"];
-  sequenceList.map((sequence) => {
-    if (string.includes(sequence)) {
-      hasNaughtySequence = true;
-    }
-  });
-  return !hasNaughtySequence;
-}
-
-function hasThreeVowels(string) {
-  let vowelList = ["a", "e", "i", "o", "u"];
-  let vowelCount = 0;
-  let letterList = string.split("");
-  letterList.map((letter) => {
-    if (vowelList.indexOf(letter) !== -1) {
-      vowelCount++
-    }
-  });
-  return vowelCount >= 3 ? true : false;
-}
-
-function hasDoubleLetters(string) {
-  let letterList = [
-    "a",
-    "b",
-    "c",
-    "d",
-    "e",
-    "f",
-    "g",
-    "h",
-    "i",
-    "j",
-    "k",
-    "l",
-    "m",
-    "n",
-    "m",
-    "n",
-    "o",
-    "p",
-    "q",
-    "r",
-    "s",
-    "t",
-    "u",
-    "v",
-    "w",
-    "x",
-    "y",
-    "z",
-  ];
-  let stringHasDoubleLetters = false;
-  letterList.map((letter) => {
-    let doubeLetter = `${letter}${letter}`;
-    if (string.includes(doubeLetter)) {
-      stringHasDoubleLetters = true;
-    }
-  });
-  return stringHasDoubleLetters;
-}
-
-function isNice(string) {
+function regexOne(string) {
+  let containsThreeVowelsMatch = string.match(
+    /([aeiou]).*([aeiou]).*([aeiou])/
+  );
+  let doubleLetter = string.match(/([a-z])\1/);
+  let noNaughtySequence = string.match(/(ab)|(cd)|(pq)|(xy)/);
   return (
-    hasDoubleLetters(string) &&
-    isWithoutNaughtySequence(string) &&
-    hasThreeVowels(string)
+    noNaughtySequence === null &&
+    doubleLetter !== null &&
+    containsThreeVowelsMatch !== null
   );
 }
 
-function checkIfNaughtyOrNice(inputList) {
+function regexTwo(string) {
+  let letterRepeatMatch = string.match(/([a-z])([a-z])\1/);
+  let doubleLetterMatch = string.match(/([a-z][a-z])(\w*)\1/);
+
+  return letterRepeatMatch !== null && doubleLetterMatch !== null;
+}
+
+function checkIfNaughtyOrNice(inputList, part) {
   let niceCounter = 0;
+  const regexer = (string) =>
+    part === 1 ? regexOne(string) : regexTwo(string);
+
   inputList.map((string) => {
-    if (isNice(string)) {
-      niceCounter++;
-    }
+    regexer(string) ? niceCounter++ : null;
   });
   return niceCounter;
 }
 
-const partOne = checkIfNaughtyOrNice(input);
+const partOne = checkIfNaughtyOrNice(input, 1); // 258
 
-console.log(partOne);
+const partTwo = checkIfNaughtyOrNice(input, 2); // 53
+console.log(partOne, partTwo);
