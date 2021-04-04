@@ -36,6 +36,5 @@ function checkIfNaughtyOrNice(inputList, part) {
 }
 
 const partOne = checkIfNaughtyOrNice(input, 1); // 258
-
 const partTwo = checkIfNaughtyOrNice(input, 2); // 53
 console.log(partOne, partTwo);
