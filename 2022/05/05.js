@@ -3,36 +3,29 @@ const args = process.argv.splice(2);
 const fileName = args[0] === "demo" ? "./demo" : "./input";
 let input = fs.readFileSync(fileName, "utf-8");
 
-const [matrix, cmdString] = input.split("\n\n");
+/**
+ * Separate Stacks from Commands
+ * Parse the commands into [count, from, to]
+ * Rotate the Stack Matrix clockwise
+ * Run the cmdList
+ * Remove [count] amount from the [from] stack in a tmp array
+ * Reverse the tmpArray
+ * Add the reversedTmpArray to the [To] stack
+ * read out the last entries per stack
+ */
 
-function rotateClockwise(a) {
-  var n = a.length;
-  for (var i = 0; i < n / 2; i++) {
-    for (var j = i; j < n - i - 1; j++) {
-      var tmp = a[i][j];
-      a[i][j] = a[n - j - 1][i];
-      a[n - j - 1][i] = a[n - i - 1][n - j - 1];
-      a[n - i - 1][n - j - 1] = a[j][n - i - 1];
-      a[j][n - i - 1] = tmp;
-    }
-  }
-  return a;
-}
+const [stackMatrixRaw, commandListRaw] = input.split("\n\n");
 
-const cmdList = cmdString.split("\n").map((string) => {
-  const match = string.match(
-    /move (?<amount>\d+) from (?<from>\d) to (?<to>\d)/
-  );
+const parseCommandList = (arr) =>
+  arr
+    .split(/\n/)
+    .map(
+      (line) =>
+        line.match(/move (?<count>\d+) from (?<from>\d) to (?<to>\d)/).groups
+    );
 
-  const { amount, from, to } = match.groups;
-
-  return { amount, from: from - 1, to: to - 1 };
-});
-
-const parsedMatrix = matrix
-  .split("\n")
-
-  .map((el) => {
+const parseStackMatrix = (arr) =>
+  arr.split("\n").map((el) => {
     const temp = [];
 
     for (let i = 0; i < el.length; i += 4) {
@@ -42,31 +35,34 @@ const parsedMatrix = matrix
     return temp;
   });
 
-parsedMatrix.pop();
+const rotateClockwise = (arr) =>
+  arr[0].map((column, index) =>
+    arr.map((row) => row[index]).filter((el) => el !== " ")
+  );
 
-// const flipMatrix = parsedMatrix.map((val, index) =>
-//   parsedMatrix
-//     .map((row) => row[index])
-//     .reverse()
-//     // .filter((char) => char !== " ")
-// );
+const commandList = parseCommandList(commandListRaw);
 
-const flipMatrix = rotateClockwise(parsedMatrix);
-// .map((el) =>
-//   el.filter((char) => char !== " ")
-// );
+const stackMatrix = parseStackMatrix(stackMatrixRaw);
 
-console.log(flipMatrix);
+const rotatedStackMatrix = rotateClockwise(stackMatrix);
 
-cmdList.forEach(({ amount, from, to }) => {
-  console.log(amount, from, to);
-  const crates = flipMatrix[from].splice(0, amount).reverse();
+const runCommandList = (cmds, arr, reverse = false) => {
+  const stacks = JSON.parse(JSON.stringify(arr)); // Deep Copy array to prevent mutation
+  cmds.forEach(({ count, from, to }) => {
+    const crates = stacks[from - 1].splice(0, count);
 
-  flipMatrix[to].unshift(...crates);
-});
+    if (reverse) {
+      crates.reverse();
+    }
 
-const partOne = flipMatrix.map((el) => el[0]);
+    stacks[to - 1].unshift(...crates);
+  });
 
-// console.log(partOne.join(""));
+  return stacks.map((el) => el[0]).join("");
+};
 
-console.log(flipMatrix);
+const partOne = runCommandList(commandList, rotatedStackMatrix, true);
+const partTwo = runCommandList(commandList, rotatedStackMatrix);
+
+console.log(partOne, partTwo);
+// console.log(partTwo);

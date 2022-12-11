@@ -26,5 +26,5 @@ const partTwo = input
   .map((el) => el.split(",").map((code) => createSectionList(code).split(",")))
   .filter(([first, second]) => first.find((el) => second.includes(el))).length;
 
-// console.log(partOne);
+console.log(partOne);
 console.log(partTwo);
