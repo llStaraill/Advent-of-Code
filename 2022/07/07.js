@@ -66,11 +66,11 @@ class Tree {
     currentNode.children.forEach((node) => fileTree.traverse(callback, node));
   }
 
-  searchByFileSize(size) {
+  searchByFileSize(min, max) {
     let nodeList = [];
 
     this.traverse((node) => {
-      if (node.getDirSize() <= size) {
+      if (node.getDirSize() >= min && node.getDirSize() <= max) {
         // console.log(node.getDirSize());
         nodeList.push(node);
       }
@@ -82,7 +82,7 @@ class Tree {
 
 const fileTree = new Tree();
 
-const parseCode = (initCmdList) => {
+const initTree = (initCmdList) => {
   const cmdList = JSON.parse(JSON.stringify(initCmdList));
 
   let currentNode = fileTree.root;
@@ -136,12 +136,26 @@ const parseCode = (initCmdList) => {
   }
 };
 
-parseCode(input);
+initTree(input);
 
-const foldersBelowTenThousand = fileTree.searchByFileSize(100000);
+const foldersBelowTenThousand = fileTree.searchByFileSize(0, 100000);
 
 const partOne = foldersBelowTenThousand
   .map((node) => node.getDirSize())
   .reduce((acc, curr) => acc + curr);
 
 console.log({ partOne });
+
+const seventyM = 70000000;
+const thirtyM = 30000000;
+
+const currentFreeSpace = seventyM - fileTree.root.getDirSize();
+const minFileSize = thirtyM - currentFreeSpace;
+
+const potentiallyDeletable = fileTree.searchByFileSize(minFileSize, 70000000);
+
+const partTwo = potentiallyDeletable
+  .sort((a, b) => a.getDirSize() - b.getDirSize())[0]
+  .getDirSize();
+
+console.log({ partTwo });
