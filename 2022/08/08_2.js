@@ -51,8 +51,7 @@ const getHeightCount = (list, size) => {
   let count = 0;
   let tmpHeight = 0;
 
-  const isVisible = (currentTree) =>
-    currentTree < size && currentTree >= tmpHeight;
+  const isVisible = (currentTree) => currentTree < size;
 
   for (let i = 0; i <= list.length; i++) {
     const currentTree = list[i];
@@ -62,7 +61,7 @@ const getHeightCount = (list, size) => {
     }
     if (isVisible(currentTree)) {
       count++;
-      tmpHeight = currentTree;
+      // tmpHeight = currentTree;
     }
   }
 
@@ -111,11 +110,5 @@ const scenicScoreMapList = Array.from(scenicScoreMap.entries())
     { ...value, count: value.l * value.r * value.u * value.d },
   ])
   .sort((a, b) => b[1].count - a[1].count);
-//   .sort((a, b) => a[0] - b[0]);
 
 console.log(scenicScoreMapList[0]);
-
-// console.log({
-//   scenicScoreMapListLength: scenicScoreMapList.length,
-//   totalCount,
-// });
