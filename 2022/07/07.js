@@ -40,7 +40,6 @@ class TreeNode {
 
     fileTree.traverse((node) => {
       if (node.id !== this.id) {
-        const nodeSize = node.getFileSize();
         dirSize += node.getFileSize();
       }
     }, this);
