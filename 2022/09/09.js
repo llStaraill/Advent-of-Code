@@ -11,8 +11,6 @@ const log = (val, forceLog = false) => {
 };
 const deepCopy = (val) => JSON.parse(JSON.stringify(val));
 
-const testArr = deepCopy(new Array(5).fill(new Array(6).fill(".")));
-
 /** Get Input */
 
 let input = fs
@@ -107,7 +105,6 @@ const moveAllKnots = (knotListRaw) => {
         const lastKnot = knotList.slice(knotList.length - 1)[0];
 
         addToSet(lastKnot.x, lastKnot.y);
-        // logMapPosition(knotList);
       }
 
       log(`\nEnd of Step: ${j + 1}`);
@@ -115,18 +112,6 @@ const moveAllKnots = (knotListRaw) => {
     }
     log("\t== End of CMD ==");
   });
-};
-
-const logMapPosition = (knotList) => {
-  const copyTestArr = deepCopy(testArr);
-
-  knotList.forEach((knot, index) => {
-    copyTestArr[knot.y][knot.x] = index.toString();
-  });
-
-  copyTestArr[knotList[0].y][knotList[0].x] = "H";
-
-  log(copyTestArr, true);
 };
 
 const partOneKnots = deepCopy(new Array(2).fill({ x: 0, y: 0 }));
