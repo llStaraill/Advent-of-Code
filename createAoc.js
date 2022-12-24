@@ -14,7 +14,7 @@ const log = (val, forceLog = false) => {
     console.log(val);
   }
 };
-const overWrite = (val) => JSON.parse(JSON.stringify(val));
+const deepCopy = (val) => JSON.parse(JSON.stringify(val));
 
 /** Get Input */
 
