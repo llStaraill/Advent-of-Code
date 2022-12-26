@@ -18,8 +18,6 @@ let input = fs.readFileSync(fileName, "utf-8").split("\n");
 
 /** Part One */
 
-let doList = [];
-
 const readCmd = (cmd) => {
   if (cmd.includes("addx ")) {
     const [_, val] = cmd.split(" ");
@@ -36,7 +34,6 @@ const cycleThrough = (rawInput, breakCondition, cb) => {
   let addXVal = 0;
 
   while (breakCondition(cycle)) {
-    // log(`\n\t=== Cycle ${cycle} ===\n\t    x === ${x}`);
     cb(cycle, x);
 
     if (addXVal !== 0) {
@@ -66,18 +63,18 @@ const calcValue = (cycle, x) => {
   }
 };
 
-const lowerThanTwoTwentyOne = (cycle) => cycle < 220;
+const lowerThanTwoTwenty = (cycle) => cycle < 220;
 
-// cycleThrough(input, lowerThanTwoTwentyOne, calcValue);
+cycleThrough(input, lowerThanTwoTwenty, calcValue);
 
-// const partOne = cycleValues.reduce((acc, curr) => acc + curr);
+const partOne = cycleValues.reduce((acc, curr) => acc + curr);
 
-// log(partOne, true);
+log(partOne, true);
 /** Part Two */
 
 const ctr = deepCopy(new Array(6).fill(new Array(40).fill(".")));
 
-const lowerThanTwoFourtyOne = (cycle) => cycle < 240;
+const lowerThanTwoFourty = (cycle) => cycle < 240;
 
 const drawStuff = (cycle, x) => {
   const row = Math.floor(cycle / 40);
@@ -89,17 +86,12 @@ const drawStuff = (cycle, x) => {
     calculatedCycle === x - 1 ||
     calculatedCycle === x + 1;
 
-  // log(
-  //   `light: ${isLit} - r: ${row} | c: ${column} | cycle: ${calculatedCycle} / x: ${x}`
-  // );
   if (isLit) {
     ctr[row][column] = "#";
   }
-
-  // log(`c: ${cycle} / c_ ${column} / r: ${row}`);
 };
 
-cycleThrough(input, lowerThanTwoFourtyOne, drawStuff);
+cycleThrough(input, lowerThanTwoFourty, drawStuff);
 
 log(
   ctr.map((row) => row.join("")),
