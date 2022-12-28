@@ -21,8 +21,8 @@ class Monkey {
   constructor(id, startingItems, opCallback, testCallback) {
     this.items = startingItems;
     this.id = id;
-    this.opCallback = opCallback;
-    this.testCondition = testCallback;
+    this.op = opCallback;
+    this.test = testCallback;
     this.itemCount = 0;
   }
 
@@ -48,59 +48,57 @@ const createMonkeyList = (inputRaw) => {
         .replace("Starting items: ", "")
         .replaceAll(" ", "")
         .split(",")
-        .map(BigInt);
+        .map((el) => parseInt(el));
 
     const getOperationLine = (line) => {
       const [_, cmd] = line.replace("old", "").split("=");
 
       if (cmd.includes("old")) {
-        return (x) => {
-          log(`\t- Multiplying ${x} with itself ${x}`);
-          return x * x;
-        };
+        return { operator: "*", value: "old" };
       } else {
         const operator = cmd.match(/[\*|\-|\+]/)[0];
-        const value = BigInt(parseInt(cmd.match(/\d+/)[0]));
+        const value = parseInt(cmd.match(/\d+/)[0]);
 
-        if (operator === "+") {
-          return (x) => {
-            log(`\t- Adding ${value} to ${x}`);
-            return x + value;
-          };
-        }
-
-        if (operator === "-") {
-          return (x) => {
-            log(`\t- Substracting ${value} from ${x}`);
-            return x - value;
-          };
-        }
-
-        if (operator === "*") {
-          return (x) => {
-            log(`\t- Multiplying ${x} by ${value}`);
-            return x * value;
-          };
-        }
+        return { operator, value };
       }
+
+      // if (cmd.includes("old")) {
+      //   return (x) => {
+      //     log(`\t- Multiplying ${x} with itself ${x}`);
+      //     return x * x;
+      //   };
+      // } else {
+      //   const operator = cmd.match(/[\*|\-|\+]/)[0];
+      //   const value = parseInt(cmd.match(/\d+/)[0]);
+
+      //   if (operator === "+") {
+      //     return (x) => {
+      //       log(`\t- Adding ${value} to ${x}`);
+      //       return x + value;
+      //     };
+      //   }
+
+      //   if (operator === "-") {
+      //     return (x) => {
+      //       log(`\t- Substracting ${value} from ${x}`);
+      //       return x - value;
+      //     };
+      //   }
+
+      //   if (operator === "*") {
+      //     return (x) => {
+      //       log(`\t- Multiplying ${x} by ${value}`);
+      //       return x * value;
+      //     };
+      //   }
+      // }
     };
 
     const getTestCondition = (line) => {
-      const getDivisibleBy = (line) => BigInt(parseInt(line.split("by")[1]));
+      const getDivisibleBy = (line) => parseInt(line.split("by")[1]);
       const getTargetMonkey = (line) => parseInt(line.split("monkey")[1]);
       return {
-        test: (x) => {
-          if (x % getDivisibleBy(line) === 0) {
-            log(
-              `\t${x} is dividible by ${getDivisibleBy(line)} = ${
-                x / getDivisibleBy(line)
-              }  -> ${x % getDivisibleBy(line) === 0}`,
-              true
-            );
-          }
-
-          return x % getDivisibleBy(line) === BigInt(0);
-        },
+        modulo: getDivisibleBy(line),
         isTrue: getTargetMonkey(isTrue),
         isFalse: getTargetMonkey(isFalse),
       };
@@ -130,24 +128,37 @@ const turn = (monkey, monkeyList, decreaseWorry = true) => {
 
     // Inspecting Item
 
-    item = monkey.operation(item);
-    log(`Worry level after operation is now  ${item}.`);
+    const { operator, value } = monkey.op;
+    const { modulo, isTrue, isFalse } = monkey.test;
+    let testResult;
+
+    const n = modulo;
+
+    if (value === "old") {
+      item *= item;
+    } else if (operator === "*") {
+      item *= value;
+    } else if (operator === "+") {
+      item += value;
+    }
+
+    monkey.itemCount++;
+
+    // item = monkey.operation(item);
+    log(`Operation: ${operator} ${value}`);
+    log(`Worry level after operation is now  ${item}`);
 
     // Getting bored
-    if (decreaseWorry) {
-      item = Math.floor(item / 3);
-      log(
-        `Monkey gets bored with item. Worry level after division is ${item}.`
-      );
-    }
+    item = decreaseWorry(item);
+    log(`Decrease Worry Levels to ${item}`);
+
+    testResult = item % n === 0;
+
+    log(`Worry level is dividible by ${n}: ${testResult}`);
 
     // Throw it
 
-    const targetMonkeyId = monkey.test(item)
-      ? monkey.testCondition.isTrue
-      : monkey.testCondition.isFalse;
-
-    // log(`Condition ${monkey.test(item) ? "succeeded" : "failed"}`);
+    const targetMonkeyId = testResult ? isTrue : isFalse;
 
     const targetMonkey = monkeyList.find((el) => el.id === targetMonkeyId);
     targetMonkey.items.push(item);
@@ -156,7 +167,7 @@ const turn = (monkey, monkeyList, decreaseWorry = true) => {
   }
 };
 
-const doRounds = (monkeyList, maxRounds, decreaseWorry = true) => {
+const doRounds = (monkeyList, maxRounds, decreaseWorry) => {
   for (let i = 1; i <= maxRounds; i++) {
     log(`\n\n\t=== Round ${i} ===`);
     monkeyList.forEach((monkey) => turn(monkey, monkeyList, decreaseWorry));
@@ -180,13 +191,18 @@ const doRounds = (monkeyList, maxRounds, decreaseWorry = true) => {
     .reduce((acc, curr) => acc * curr);
 };
 
-// const monkeyListOne = createMonkeyList(input);
-// const partOne = doRounds(monkeyListOne, 20);
+const monkeyListOne = createMonkeyList(input);
+const divideByThree = (x) => Math.floor(x / 3);
+const partOne = doRounds(monkeyListOne, 20, divideByThree);
 
-// log(partOne, true);
+log(partOne, true);
 /** Part Two */
 
 const monkeyListTwo = createMonkeyList(input);
+const monkeyModuloSum = monkeyListTwo
+  .map((monkey) => monkey.test.modulo)
+  .reduce((acc, curr) => acc * curr);
+const moduloTheSum = (x) => x % monkeyModuloSum;
 
-const partTwo = doRounds(monkeyListTwo, 1000, false);
+const partTwo = doRounds(monkeyListTwo, 10000, moduloTheSum);
 log(partTwo, true);
