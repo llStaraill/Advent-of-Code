@@ -24,6 +24,27 @@ const lazy = function (creator) {
   return callBack
 };
 
+function makeRangeIterator(start = 0, end = Infinity, step = 1) {
+  let nextIndex = start;
+  let iterationCount = 0;
+
+
+
+  const rangeIterator = {
+    next() {
+      let result;
+      if (nextIndex < end) {
+        result = { value: nextIndex, done: false };
+        nextIndex += step;
+        iterationCount++;
+        return result;
+      }
+      return { value: iterationCount, done: true };
+    },
+  };
+  return rangeIterator;
+}
+
 
 /** Get Input */
 
@@ -83,7 +104,7 @@ const mapSeeds = (seeds) => {
   ) {
 
 
-     
+
     const seedToSoil = lazy(() => mapSeedToValue(seed.value, 1))
 
 
@@ -101,7 +122,7 @@ const mapSeeds = (seeds) => {
 
     const location = humidityToLocation()
 
-  
+
 
     locationList.push(location)
 
@@ -128,7 +149,7 @@ const mapSeeds = (seeds) => {
 
 
 const getPartTwoSeeds = (seeds) => {
-  const seedArray = []
+  let seedValue
 
   const partTwoSeedMap = new Set(seeds)
 
@@ -139,22 +160,41 @@ const getPartTwoSeeds = (seeds) => {
 
   while (!sourceVal.done) {
     const rangeVal = seedRangeValues.next()
- 
-
-   const seedRange = Array.from({length:rangeVal.value}, (_,index) => sourceVal.value + index)
 
 
-    
-    const intervallLocation = mapSeeds(seedRange,1)
 
-    seedArray.push(intervallLocation)
+    const rangeIterator = makeRangeIterator(sourceVal.value, sourceVal.value + rangeVal.value)
+
+
+
+    let rangeValIt = rangeIterator.next()
+
+
+
+    while (!rangeValIt.done) {
+
+
+      const intervallLocation = mapSeeds([rangeValIt.value], 1)
+
+
+
+      if (!seedValue || intervallLocation < seedValue) {
+        seedValue = intervallLocation
+      }
+
+      rangeValIt = rangeIterator.next()
+
+    }
+
+
+
 
     sourceVal = seedRangeValues.next()
 
   }
 
 
-  return Math.min(...seedArray)
+  return seedValue
 }
 
 
