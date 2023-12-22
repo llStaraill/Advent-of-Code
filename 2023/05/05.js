@@ -11,6 +11,20 @@ const log = (val, forceLog = false) => {
 };
 const deepCopy = (val) => JSON.parse(JSON.stringify(val));
 
+const lazy = function (creator) {
+
+
+  function callBack() {
+
+    return creator.apply(this, arguments);
+
+
+  };
+
+  return callBack
+};
+
+
 /** Get Input */
 
 let input = fs.readFileSync(fileName, "utf-8").split("\n\n");
@@ -41,29 +55,9 @@ const mapSeedToValue = (seed, index) => {
 
   }
 
-  const hasNextRow = !!input[index + 1]
-
-  if (hasNextRow) {
-    return mapSeedToValue(seedTarget, index + 1,)
-
-  } else return seedTarget
+  return seedTarget
 
 
-
-
-  // const seedMapEntry = seedMap.get(seedKey);
-
-  // if (seedMapEntry) {
-
-  //   seedMapEntry.push(seedTarget);
-  //   seedMap.set(seedKey, seedMapEntry)
-  // } else {
-  //   seedMap.set(seedKey, [seed, seedTarget])
-  // }
-
-  // const hasNextRow = !!input[index + 1]
-
-  // if (hasNextRow) mapSeedToValue(seedTarget, seedKey, index + 1, seedMap)
 
 }
 
@@ -71,7 +65,10 @@ const mapSeedToValue = (seed, index) => {
 
 
 
-const mapSeeds = (seeds, index) => {
+
+
+
+const mapSeeds = (seeds) => {
   const seedMap = new Map(seeds.map((seed) => [seed, [seed]]));
   const locationList = []
 
@@ -79,13 +76,34 @@ const mapSeeds = (seeds, index) => {
   const seedMapValues = seedMap.values();
   let seed = seedMapValues.next();
 
+
+
   while (
     !seed.done
   ) {
 
 
+     
+    const seedToSoil = lazy(() => mapSeedToValue(seed.value, 1))
 
-    locationList.push(mapSeedToValue(seed.value, 1))
+
+
+    const soilToFertilizer = lazy(() => mapSeedToValue(seedToSoil(), 2))
+
+
+    const fertilizerToWater = lazy(() => mapSeedToValue(soilToFertilizer(), 3))
+    const waterToLight = lazy(() => mapSeedToValue(fertilizerToWater(), 4))
+    const lightToTemperature = lazy(() => mapSeedToValue(waterToLight(), 5))
+    const temperatureToHumidity = lazy(() => mapSeedToValue(lightToTemperature(), 6))
+    const humidityToLocation = lazy(() => mapSeedToValue(temperatureToHumidity(), 7))
+
+
+
+    const location = humidityToLocation()
+
+  
+
+    locationList.push(location)
 
 
 
@@ -95,32 +113,8 @@ const mapSeeds = (seeds, index) => {
 
 
 
-  // await resolveSeedMaps(Array.from(seedMap.values()), 1, seedMap)
-  // await resolveSeedMaps(Array.from(seedMap.values()), 2, seedMap)
 
-
-  // await resolveSeedMaps(Array.from(seedMap.values()), 3, seedMap)
-  // await resolveSeedMaps(Array.from(seedMap.values()), 4, seedMap)
-  // await resolveSeedMaps(Array.from(seedMap.values()), 5, seedMap)
-  // await resolveSeedMaps(Array.from(seedMap.values()), 6, seedMap)
-  // await resolveSeedMaps(Array.from(seedMap.values()), 7, seedMap)
-
-
-
-
-
-
-
-
-  // seeds.map((seed) => mapSeedToValue(seed, seed, 1, seedMap))
-
-
-
-  // figure out if in Range
-
-
-
-  return locationList
+  return Math.min(...locationList)
 
 }
 
@@ -136,39 +130,38 @@ const mapSeeds = (seeds, index) => {
 const getPartTwoSeeds = (seeds) => {
   const seedArray = []
 
+  const partTwoSeedMap = new Set(seeds)
 
 
-  for (let i = 0; i <= seeds.length; i += 2) {
-    const source = seeds[i];
-    const range = seeds[i + 1]
+  let seedRangeValues = partTwoSeedMap.values();
+
+  let sourceVal = seedRangeValues.next();
+
+  while (!sourceVal.done) {
+    const rangeVal = seedRangeValues.next()
+ 
+
+   const seedRange = Array.from({length:rangeVal.value}, (_,index) => sourceVal.value + index)
 
 
+    
+    const intervallLocation = mapSeeds(seedRange,1)
 
-    seedArray.push(...Array.from({ length: range }, (_, index) => source + index))
+    seedArray.push(intervallLocation)
 
-
+    sourceVal = seedRangeValues.next()
 
   }
 
 
-  return seedArray
+  return Math.min(...seedArray)
 }
+
+
 
 
 
 const partTwoSeeds = getPartTwoSeeds(seeds)
 
+console.log({ partTwoSeeds })
 
-
-
-const partTwo = Math.min(...mapSeeds(partTwoSeeds, 1))
-
-
-console.log({ partTwo })
-// const partOneMap = mapSeeds(partTwoSeeds, 1).then((value) => console.log(Math.min(...Array.from(value.values()).map(val => val[val.length - 1]))))
-
-
-// const partTwoMap = mapSeeds(partTwoSeeds, 1).then((value) => console.log(Math.min(...Array.from(value.values()).map(val => val[val.length - 1]))))
-// const partTwo = Math.min(...Array.from(partTwoMap.values()).map(val => val[val.length - 1]))
-
-// console.log({ partTwo })
