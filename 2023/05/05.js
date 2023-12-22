@@ -76,8 +76,35 @@ const mapSeeds = (seeds, index) => {
 
 }
 
-const partOneMap = mapSeeds(seeds, 1)
+// const partOneMap = mapSeeds(seeds, 1)
 
-const partOne = Math.min(...Array.from(partOneMap.values()).map(val => val[val.length - 1]))
+// const partOne = Math.min(...Array.from(partOneMap.values()).map(val => val[val.length - 1]))
 
-console.log({ partOne })
+
+const getPartTwoSeeds = (seeds) => {
+  const seedArray = []
+
+
+
+  for (let i = 0; i <= seeds.length; i += 2) {
+    const source = seeds[i];
+    const range = seeds[i + 1]
+
+
+
+    seedArray.push(...Array.from({ length: range }, (_, index) => source + index))
+
+
+
+  }
+
+
+  return seedArray
+}
+
+const partTwoSeeds = getPartTwoSeeds(seeds)
+
+const partTwoMap = mapSeeds(partTwoSeeds, 1);
+const partTwo = Math.min(...Array.from(partTwoMap.values()).map(val => val[val.length - 1]))
+
+console.log({ partTwo })
