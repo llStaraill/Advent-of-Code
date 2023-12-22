@@ -27,7 +27,7 @@ const findSeedRange = (row, seed) => {
 }
 
 
-const mapSeedToValue = (seed, seedKey, index, seedMap) => {
+const mapSeedToValue = (seed, index) => {
   const rows = input[index].split("\n").splice(1).map((row) => row.split(" ").map(Number))
 
   const seedRange = rows.find((row) => findSeedRange(row, seed))
@@ -41,44 +41,96 @@ const mapSeedToValue = (seed, seedKey, index, seedMap) => {
 
   }
 
-
-
-
-  const seedMapEntry = seedMap.get(seedKey);
-
-  if (seedMapEntry) {
-
-    seedMapEntry.push(seedTarget);
-    seedMap.set(seedKey, seedMapEntry)
-  } else {
-    seedMap.set(seedKey, [seed, seedTarget])
-  }
-
   const hasNextRow = !!input[index + 1]
 
-  if (hasNextRow) mapSeedToValue(seedTarget, seedKey, index + 1, seedMap)
+  if (hasNextRow) {
+    return mapSeedToValue(seedTarget, index + 1,)
+
+  } else return seedTarget
+
+
+
+
+  // const seedMapEntry = seedMap.get(seedKey);
+
+  // if (seedMapEntry) {
+
+  //   seedMapEntry.push(seedTarget);
+  //   seedMap.set(seedKey, seedMapEntry)
+  // } else {
+  //   seedMap.set(seedKey, [seed, seedTarget])
+  // }
+
+  // const hasNextRow = !!input[index + 1]
+
+  // if (hasNextRow) mapSeedToValue(seedTarget, seedKey, index + 1, seedMap)
 
 }
 
 
 
+
+
 const mapSeeds = (seeds, index) => {
-  const seedMap = new Map();
+  const seedMap = new Map(seeds.map((seed) => [seed, [seed]]));
+  const locationList = []
 
 
-  seeds.map((seed) => mapSeedToValue(seed, seed, 1, seedMap))
+  const seedMapValues = seedMap.values();
+  let seed = seedMapValues.next();
+
+  while (
+    !seed.done
+  ) {
+
+
+
+    locationList.push(mapSeedToValue(seed.value, 1))
+
+
+
+    seed = seedMapValues.next();
+  }
+
+
+
+
+  // await resolveSeedMaps(Array.from(seedMap.values()), 1, seedMap)
+  // await resolveSeedMaps(Array.from(seedMap.values()), 2, seedMap)
+
+
+  // await resolveSeedMaps(Array.from(seedMap.values()), 3, seedMap)
+  // await resolveSeedMaps(Array.from(seedMap.values()), 4, seedMap)
+  // await resolveSeedMaps(Array.from(seedMap.values()), 5, seedMap)
+  // await resolveSeedMaps(Array.from(seedMap.values()), 6, seedMap)
+  // await resolveSeedMaps(Array.from(seedMap.values()), 7, seedMap)
+
+
+
+
+
+
+
+
+  // seeds.map((seed) => mapSeedToValue(seed, seed, 1, seedMap))
+
+
 
   // figure out if in Range
 
 
 
-  return seedMap
+  return locationList
 
 }
 
-// const partOneMap = mapSeeds(seeds, 1)
 
-// const partOne = Math.min(...Array.from(partOneMap.values()).map(val => val[val.length - 1]))
+
+// const partOne = Math.min(...mapSeeds(seeds, 1))
+
+
+// console.log({partOne})
+
 
 
 const getPartTwoSeeds = (seeds) => {
@@ -102,9 +154,21 @@ const getPartTwoSeeds = (seeds) => {
   return seedArray
 }
 
+
+
 const partTwoSeeds = getPartTwoSeeds(seeds)
 
-const partTwoMap = mapSeeds(partTwoSeeds, 1);
-const partTwo = Math.min(...Array.from(partTwoMap.values()).map(val => val[val.length - 1]))
+
+
+
+const partTwo = Math.min(...mapSeeds(partTwoSeeds, 1))
+
 
 console.log({ partTwo })
+// const partOneMap = mapSeeds(partTwoSeeds, 1).then((value) => console.log(Math.min(...Array.from(value.values()).map(val => val[val.length - 1]))))
+
+
+// const partTwoMap = mapSeeds(partTwoSeeds, 1).then((value) => console.log(Math.min(...Array.from(value.values()).map(val => val[val.length - 1]))))
+// const partTwo = Math.min(...Array.from(partTwoMap.values()).map(val => val[val.length - 1]))
+
+// console.log({ partTwo })
